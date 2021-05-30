@@ -1542,8 +1542,11 @@ static cjose_jwk_t *_cjose_jwk_import_oct(json_t *jwk_json, cjose_err *err)
     size_t k_buflen = 0;
     if (!_decode_json_object_base64url_attribute(jwk_json, CJOSE_JWK_K_STR, &k_buffer, &k_buflen, err))
     {
-        CJOSE_ERROR(err, CJOSE_ERR_INVALID_ARG);
-        goto import_oct_cleanup;
+    	if (!_decode_json_object_base64_attribute(jwk_json, CJOSE_JWK_K_STR, &k_buffer, &k_buflen, err))
+    	    {
+              CJOSE_ERROR(err, CJOSE_ERR_INVALID_ARG);
+              goto import_oct_cleanup;
+    	    }
     }
 
     // create the jwk
