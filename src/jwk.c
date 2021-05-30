@@ -1335,9 +1335,12 @@ _decode_json_object_base64url_attribute(json_t *jwk_json, const char *key, uint8
     // decode the base64url encoded string to the allocated buffer
     if (!cjose_base64url_decode(str, strlen(str), buffer, buflen, err))
     {
-        *buflen = 0;
-        *buffer = NULL;
-        return false;
+    	if (!cjose_base64_decode(str, strlen(str), buffer, buflen, err))
+    	    {
+    	        *buflen = 0;
+    	        *buffer = NULL;
+    	        return false;
+    	    }
     }
 
     return true;
@@ -1542,11 +1545,8 @@ static cjose_jwk_t *_cjose_jwk_import_oct(json_t *jwk_json, cjose_err *err)
     size_t k_buflen = 0;
     if (!_decode_json_object_base64url_attribute(jwk_json, CJOSE_JWK_K_STR, &k_buffer, &k_buflen, err))
     {
-    	if (!_decode_json_object_base64_attribute(jwk_json, CJOSE_JWK_K_STR, &k_buffer, &k_buflen, err))
-    	    {
-              CJOSE_ERROR(err, CJOSE_ERR_INVALID_ARG);
-              goto import_oct_cleanup;
-    	    }
+        CJOSE_ERROR(err, CJOSE_ERR_INVALID_ARG);
+        goto import_oct_cleanup;
     }
 
     // create the jwk
