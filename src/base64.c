@@ -244,10 +244,6 @@ bool cjose_base64_decode(const char *input, size_t inlen, uint8_t **output, size
 }
 bool cjose_base64url_decode(const char *input, size_t inlen, uint8_t **output, size_t *outlen, cjose_err *err)
 {
-	if(!_decode(input, inlen, output, outlen, true, err)){
-    return _decode(input, inlen, output, outlen, false, err);
-	}else{
-		return true;
-	}
+    return _decode(input, inlen, output, outlen, true, err);
 
 }

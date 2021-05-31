@@ -833,8 +833,11 @@ cjose_jws_t *cjose_jws_import(const char *cser, size_t cser_len, cjose_err *err)
     _cjose_jws_strcpy(&jws->dat_b64u, cser + d[0] + 1, jws->dat_b64u_len, err);
     if (!cjose_base64url_decode(jws->dat_b64u, jws->dat_b64u_len, &jws->dat, &jws->dat_len, err))
     {
+    	if (!cjose_base64_decode(jws->dat_b64u, jws->dat_b64u_len, &jws->dat, &jws->dat_len, err))
+    	{
         cjose_jws_release(jws);
         return NULL;
+    	}
     }
 
     // copy and b64u decode signature segment
@@ -842,8 +845,11 @@ cjose_jws_t *cjose_jws_import(const char *cser, size_t cser_len, cjose_err *err)
     _cjose_jws_strcpy(&jws->sig_b64u, cser + d[1] + 1, jws->sig_b64u_len, err);
     if (!cjose_base64url_decode(jws->sig_b64u, jws->sig_b64u_len, &jws->sig, &jws->sig_len, err))
     {
-        cjose_jws_release(jws);
-        return NULL;
+    	if (!cjose_base64_decode(jws->dat_b64u, jws->dat_b64u_len, &jws->dat, &jws->dat_len, err))
+    	    	{
+    	        cjose_jws_release(jws);
+    	        return NULL;
+    	    	}
     }
 
     return jws;
